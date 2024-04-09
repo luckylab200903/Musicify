@@ -25,7 +25,8 @@ const songapiget = expressAsyncHandler(async (req, res) => {
 
   try {
     const songs = await Song.find({ artist: id_artist }).populate("artist");
-    console.log("Found songs:", songs); // Add this line for debugging
+    console.log("Found songs:", songs);
+
 
     return res.status(203).json(songs);
   } catch (error) {
@@ -48,7 +49,11 @@ const songgetartist = expressAsyncHandler(async (req, res) => {
   const songs = await Song.find({ artist: artistId });
   return res.status(200).json(songs);
 });
-
+//router
+//.route("/get/song/:songname")
+//.get(passport.authenticate("jwt", { session: false }), songgetsong);
+//
+//
 const songgetsong = expressAsyncHandler(async (req, res) => {
   const { songname } = req.params;
 
@@ -166,5 +171,5 @@ module.exports = {
   songgetartist,
   songgetsong,
   addSongToLiked,
-  getLikedSongs
+  getLikedSongs,
 };
