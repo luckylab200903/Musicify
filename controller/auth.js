@@ -3,12 +3,12 @@ const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
 const User = require("../model/userModel");
 
+// Register User
 const registerUser = expressAsync(async (req, res) => {
   const { email, username, firstname, lastname, password } = req.body;
 
   if (!email || !username || !firstname || !lastname || !password) {
-    res.status(400).json({ error: "Please fill in all the details" });
-    return;
+    return res.status(400).json({ error: "Please fill in all the details" });
   }
 
   const salt = bcrypt.genSaltSync(10);
@@ -17,8 +17,7 @@ const registerUser = expressAsync(async (req, res) => {
   const existingUser = await User.findOne({ email: email });
 
   if (existingUser) {
-    res.status(400).json({ error: "User already exists" });
-    return;
+    return res.status(400).json({ error: "User already exists" });
   }
 
   const newUser = await User.create({
@@ -33,34 +32,32 @@ const registerUser = expressAsync(async (req, res) => {
   const userToReturn = { ...newUser.toJSON(), token };
   delete userToReturn.password;
 
-  res.status(200).json(userToReturn);
+  return res.status(200).json(userToReturn);
 });
 
+// Login User
 const loginUser = expressAsync(async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
-    res.sendStatus(400).json({
-      msg: "enter both the fields",
-    });
+    return res.status(400).json({ msg: "Enter both the fields" });
   }
 
   const user = await User.findOne({ email: email });
   if (!user) {
-    res.sendStatus(401).json({
-      message: "no user with this email",
-    });
+    return res.status(401).json({ message: "No user with this email" });
   }
 
-  const ispasswordvalid = bcrypt.compareSync(password, user.password);
-  if (!ispasswordvalid) {
-    res.sendStatus(403).json({
-      msg: "invalid credentials",
-    });
+  const isPasswordValid = bcrypt.compareSync(password, user.password);
+  if (!isPasswordValid) {
+    return res.status(403).json({ msg: "Invalid credentials" });
   }
+
   const token = await generateToken(email, user);
   const userToReturn = { ...user.toJSON(), token };
   delete userToReturn.password;
-  res.status(200).json(userToReturn);
+
+  return res.status(200).json(userToReturn);
 });
 
-module.exports = {registerUser,loginUser};
+module.exports = { registerUser, loginUser };
