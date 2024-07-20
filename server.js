@@ -29,6 +29,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/client/build/index.html"));
 });
 app.listen(PORT, () => {
-  connectDB("mongodb+srv://spotify-clone:spotify-clone@spotify-clone.c4a8mfr.mongodb.net/database");
+  connectDB(process.env.MONGO_URL);
   console.log(`Server is running on port ${PORT}`);
 });
