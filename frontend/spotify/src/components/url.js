@@ -1,1 +1,0 @@
-export const backendURl="http://localhost:5000/api"
